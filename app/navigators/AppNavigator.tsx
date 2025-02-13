@@ -4,8 +4,10 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
+import React from "react"
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
+import { createDrawerNavigator } from "@react-navigation/drawer"
 import { observer } from "mobx-react-lite"
 import * as Screens from "@/screens"
 import Config from "../config"
@@ -14,6 +16,7 @@ import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { useAppTheme, useThemeProvider } from "@/utils/useAppTheme"
 import { ComponentProps } from "react"
+import { DrawerContent } from "@/components/DrawerContent"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -29,7 +32,7 @@ import { ComponentProps } from "react"
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
-  Home: undefined
+  HomeDrawer: undefined
   Login: undefined
   SignUp: undefined
   SuggestedThemes: undefined
@@ -51,6 +54,23 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
+const Drawer = createDrawerNavigator()
+
+const HomeDrawer = observer(() => {
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+          width: "80%",
+        },
+      }}
+      drawerContent={(props) => <DrawerContent {...props} />}
+    >
+      <Drawer.Screen name="Home" component={Screens.HomeScreen} />
+    </Drawer.Navigator>
+  )
+})
 
 const AppStack = observer(function AppStack() {
   const {
@@ -70,11 +90,11 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Home" : "Login"}
+      initialRouteName={isAuthenticated ? "HomeDrawer" : "Login"}
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Home" component={Screens.HomeScreen} />
+          <Stack.Screen name="HomeDrawer" component={HomeDrawer} />
           <Stack.Screen name="SuggestedThemes" component={Screens.SuggestedThemesScreen} />
           <Stack.Screen name="Demo" component={DemoNavigator} />
         </>

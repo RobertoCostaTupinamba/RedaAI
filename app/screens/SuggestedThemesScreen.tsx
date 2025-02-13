@@ -3,9 +3,11 @@ import { observer } from "mobx-react-lite"
 import { MaterialIcons } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
 import { AppStackScreenProps } from "../navigators"
+import { useAppTheme } from "@/utils/useAppTheme"
 
 export const SuggestedThemesScreen = observer(() => {
   const navigation = useNavigation<AppStackScreenProps<"SuggestedThemes">["navigation"]>()
+  const { isDark } = useAppTheme()
 
   const themes = [
     {
@@ -50,16 +52,20 @@ export const SuggestedThemesScreen = observer(() => {
   ]
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className={`flex-1 ${isDark ? "bg-background-dark" : "bg-gray-50"}`}>
       {/* Header */}
-      <View className="bg-white shadow-sm px-4 py-4">
+      <View className={`${isDark ? "bg-surface-dark" : "bg-white"} shadow-sm px-4 py-4`}>
         <View className="flex-row items-center">
           <TouchableOpacity onPress={() => navigation.goBack()} className="mr-4">
-            <MaterialIcons name="arrow-back" size={24} color="#4B5563" />
+            <MaterialIcons name="arrow-back" size={24} color={isDark ? "#9CA3AF" : "#4B5563"} />
           </TouchableOpacity>
           <View>
-            <Text className="text-2xl font-bold text-gray-800">Temas Sugeridos</Text>
-            <Text className="text-gray-600">Escolha um tema para sua redação</Text>
+            <Text className={`text-2xl font-bold ${isDark ? "text-text-dark" : "text-gray-800"}`}>
+              Temas Sugeridos
+            </Text>
+            <Text className={isDark ? "text-text-secondary-dark" : "text-gray-600"}>
+              Escolha um tema para sua redação
+            </Text>
           </View>
         </View>
       </View>
@@ -70,29 +76,49 @@ export const SuggestedThemesScreen = observer(() => {
           {themes.map((theme, index) => (
             <TouchableOpacity
               key={index}
-              className="bg-white rounded-lg p-4 shadow-sm border border-gray-100"
+              className={`${
+                isDark ? "bg-surface-dark" : "bg-white"
+              } rounded-lg p-4 shadow-sm border ${
+                isDark ? "border-border-dark" : "border-gray-100"
+              }`}
             >
               {/* Title and Difficulty */}
               <View className="flex-row justify-between items-start mb-2">
-                <Text className="text-lg font-bold text-gray-800 flex-1 mr-2">{theme.title}</Text>
+                <Text
+                  className={`text-lg font-bold ${isDark ? "text-text-dark" : "text-gray-800"} flex-1 mr-2`}
+                >
+                  {theme.title}
+                </Text>
                 <View
                   className={
                     "px-2 py-1 rounded " +
                     (theme.difficulty === "Difícil"
-                      ? "bg-red-100"
+                      ? isDark
+                        ? "bg-red-900"
+                        : "bg-red-100"
                       : theme.difficulty === "Médio"
-                        ? "bg-yellow-100"
-                        : "bg-green-100")
+                        ? isDark
+                          ? "bg-yellow-900"
+                          : "bg-yellow-100"
+                        : isDark
+                          ? "bg-green-900"
+                          : "bg-green-100")
                   }
                 >
                   <Text
                     className={
                       "text-xs font-medium " +
                       (theme.difficulty === "Difícil"
-                        ? "text-red-700"
+                        ? isDark
+                          ? "text-red-300"
+                          : "text-red-700"
                         : theme.difficulty === "Médio"
-                          ? "text-yellow-700"
-                          : "text-green-700")
+                          ? isDark
+                            ? "text-yellow-300"
+                            : "text-yellow-700"
+                          : isDark
+                            ? "text-green-300"
+                            : "text-green-700")
                     }
                   >
                     {theme.difficulty}
@@ -101,25 +127,38 @@ export const SuggestedThemesScreen = observer(() => {
               </View>
 
               {/* Description */}
-              <Text className="text-gray-600 mb-3">{theme.description}</Text>
+              <Text className={isDark ? "text-text-secondary-dark" : "text-gray-600" + " mb-3"}>
+                {theme.description}
+              </Text>
 
               {/* Category */}
               <View className="flex-row items-center mb-3">
-                <MaterialIcons name="category" size={16} color="#6B7280" />
-                <Text className="text-gray-500 ml-1">{theme.category}</Text>
+                <MaterialIcons name="category" size={16} color={isDark ? "#9CA3AF" : "#6B7280"} />
+                <Text className={isDark ? "text-text-secondary-dark ml-1" : "text-gray-500 ml-1"}>
+                  {theme.category}
+                </Text>
               </View>
 
               {/* Competencies */}
               <View className="flex-row flex-wrap">
                 {theme.competencies.map((competency, compIndex) => (
-                  <View key={compIndex} className="bg-blue-50 px-2 py-1 rounded mr-2 mb-2">
-                    <Text className="text-blue-700 text-xs">{competency}</Text>
+                  <View
+                    key={compIndex}
+                    className={`${
+                      isDark ? "bg-blue-900" : "bg-blue-50"
+                    } px-2 py-1 rounded mr-2 mb-2`}
+                  >
+                    <Text className={isDark ? "text-blue-300" : "text-blue-700" + " text-xs"}>
+                      {competency}
+                    </Text>
                   </View>
                 ))}
               </View>
 
               {/* Start Button */}
-              <TouchableOpacity className="bg-blue-500 rounded-lg py-3 mt-3">
+              <TouchableOpacity
+                className={`${isDark ? "bg-primary-dark" : "bg-primary"} rounded-lg py-3 mt-3`}
+              >
                 <Text className="text-white text-center font-bold">Começar Redação</Text>
               </TouchableOpacity>
             </TouchableOpacity>

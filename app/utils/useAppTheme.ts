@@ -10,6 +10,46 @@ import {
   darkTheme,
 } from "@/theme"
 import * as SystemUI from "expo-system-ui"
+import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
+import { MMKV } from "react-native-mmkv"
+
+// Criando uma instância do MMKV para armazenar o tema
+const storage = new MMKV({ id: "theme-storage" })
+
+// Adaptador do MMKV para o Zustand
+const mmkvStorage = {
+  getItem: (name: string) => {
+    const value = storage.getString(name)
+    return value ?? null
+  },
+  setItem: (name: string, value: string) => {
+    storage.set(name, value)
+  },
+  removeItem: (name: string) => {
+    storage.delete(name)
+  },
+}
+
+type ThemeStore = {
+  isDark: boolean
+  toggleTheme: () => void
+  setTheme: (isDark: boolean) => void
+}
+
+export const useThemeStore = create<ThemeStore>()(
+  persist(
+    (set) => ({
+      isDark: false,
+      toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
+      setTheme: (isDark) => set({ isDark }),
+    }),
+    {
+      name: "theme-storage",
+      storage: createJSONStorage(() => mmkvStorage),
+    },
+  ),
+)
 
 type ThemeContextType = {
   themeScheme: ThemeContexts
@@ -54,30 +94,18 @@ export const useThemeProvider = (initialTheme: ThemeContexts = undefined) => {
   }
 }
 
-interface UseAppThemeValue {
-  // The theme object from react-navigation
-  navTheme: typeof DefaultTheme
-  // A function to set the theme context override (for switching modes)
-  setThemeContextOverride: (newTheme: ThemeContexts) => void
-  // The current theme object
-  theme: Theme
-  // The current theme context "light" | "dark"
-  themeContext: ThemeContexts
-  // A function to apply the theme to a style object.
-  // See examples in the components directory or read the docs here:
-  // https://docs.infinite.red/ignite-cli/boilerplate/app/utils/
-  themed: <T>(styleOrStyleFn: ThemedStyle<T> | StyleProp<T> | ThemedStyleArray<T>) => T
-}
-
 /**
  * Custom hook that provides the app theme and utility functions for theming.
  *
  * @returns {UseAppThemeReturn} An object containing various theming values and utilities.
  * @throws {Error} If used outside of a ThemeProvider.
  */
-export const useAppTheme = (): UseAppThemeValue => {
+export const useAppTheme = () => {
   const navTheme = useNavTheme()
   const context = useContext(ThemeContext)
+  const { isDark, toggleTheme } = useThemeStore()
+  const systemColorScheme = useColorScheme()
+
   if (!context) {
     throw new Error("useTheme must be used within a ThemeProvider")
   }
@@ -114,5 +142,7 @@ export const useAppTheme = (): UseAppThemeValue => {
     theme: themeVariant,
     themeContext,
     themed,
+    isDark: isDark ?? systemColorScheme === "dark",
+    toggleTheme,
   }
 }
