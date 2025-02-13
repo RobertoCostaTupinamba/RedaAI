@@ -71,14 +71,14 @@ export const SuggestedThemesScreen = observer(() => {
       </View>
 
       {/* Content */}
-      <ScrollView className="flex-1 px-4 pt-4">
+      <ScrollView className="flex-1 px-4 pt-4" contentContainerStyle={{ paddingBottom: 80 }}>
         <View className="space-y-4">
           {themes.map((theme, index) => (
             <TouchableOpacity
               key={index}
               className={`${
                 isDark ? "bg-surface-dark" : "bg-white"
-              } rounded-lg p-4 shadow-sm border ${
+              } rounded-lg p-4 shadow-sm border mb-1 ${
                 isDark ? "border-border-dark" : "border-gray-100"
               }`}
             >
@@ -127,14 +127,14 @@ export const SuggestedThemesScreen = observer(() => {
               </View>
 
               {/* Description */}
-              <Text className={isDark ? "text-text-secondary-dark" : "text-gray-600" + " mb-3"}>
+              <Text className={`${isDark ? "text-text-secondary-dark" : "text-gray-600"} mb-3`}>
                 {theme.description}
               </Text>
 
               {/* Category */}
               <View className="flex-row items-center mb-3">
                 <MaterialIcons name="category" size={16} color={isDark ? "#9CA3AF" : "#6B7280"} />
-                <Text className={isDark ? "text-text-secondary-dark ml-1" : "text-gray-500 ml-1"}>
+                <Text className={`${isDark ? "text-text-secondary-dark" : "text-gray-500"} ml-1`}>
                   {theme.category}
                 </Text>
               </View>
@@ -148,7 +148,7 @@ export const SuggestedThemesScreen = observer(() => {
                       isDark ? "bg-blue-900" : "bg-blue-50"
                     } px-2 py-1 rounded mr-2 mb-2`}
                   >
-                    <Text className={isDark ? "text-blue-300" : "text-blue-700" + " text-xs"}>
+                    <Text className={`${isDark ? "text-blue-300" : "text-blue-700"} text-xs`}>
                       {competency}
                     </Text>
                   </View>

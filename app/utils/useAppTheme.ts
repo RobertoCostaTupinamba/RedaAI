@@ -12,22 +12,19 @@ import {
 import * as SystemUI from "expo-system-ui"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import { MMKV } from "react-native-mmkv"
-
-// Criando uma instância do MMKV para armazenar o tema
-const storage = new MMKV({ id: "theme-storage" })
+import { load, save, remove } from "@/utils/storage/storage"
 
 // Adaptador do MMKV para o Zustand
 const mmkvStorage = {
   getItem: (name: string) => {
-    const value = storage.getString(name)
+    const value = load<string>(name)
     return value ?? null
   },
   setItem: (name: string, value: string) => {
-    storage.set(name, value)
+    save(name, value)
   },
   removeItem: (name: string) => {
-    storage.delete(name)
+    remove(name)
   },
 }
 

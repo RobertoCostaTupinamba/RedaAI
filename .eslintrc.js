@@ -46,6 +46,12 @@ module.exports = {
     "react/prop-types": 0,
     // react-native
     "react-native/no-raw-text": 0,
+    "react-native/no-inline-styles": [
+      "error",
+      {
+        ignore: ["contentContainerStyle"],
+      },
+    ],
     // reactotron
     "reactotron/no-tron-in-production": "error",
     // eslint-config-standard overrides
@@ -53,5 +59,10 @@ module.exports = {
     "no-global-assign": 0,
     "quotes": 0,
     "space-before-function-paren": 0,
+  },
+  settings: {
+    "import/resolver": {
+      typescript: {},
+    },
   },
 }

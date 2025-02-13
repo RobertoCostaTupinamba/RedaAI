@@ -13,9 +13,9 @@ export const HomeScreen = observer(() => {
   } = useStores()
   const { isDark } = useThemeStore()
 
-  const handleMenuItemPress = (title: string) => {
-    switch (title) {
-      case "Temas Sugeridos":
+  const handleMenuItemPress = (id: string) => {
+    switch (id) {
+      case "suggested-themes":
         navigation.navigate("SuggestedThemes")
         break
       // Adicione outros casos conforme necessário
@@ -24,24 +24,28 @@ export const HomeScreen = observer(() => {
 
   const menuItems = [
     {
+      id: "new-essay",
       title: "Nova Redação",
       description: "Fotografe ou envie uma redação para avaliação",
       icon: "camera-alt" as const,
       color: isDark ? "bg-blue-600" : "bg-blue-500",
     },
     {
+      id: "my-essays",
       title: "Minhas Redações",
       description: "Veja suas redações avaliadas e em análise",
       icon: "history" as const,
       color: isDark ? "bg-green-600" : "bg-green-500",
     },
     {
+      id: "detailed-feedback",
       title: "Feedback Detalhado",
       description: "Análise completa com sugestões de melhoria",
       icon: "analytics" as const,
       color: isDark ? "bg-purple-600" : "bg-purple-500",
     },
     {
+      id: "suggested-themes",
       title: "Temas Sugeridos",
       description: "Pratique com temas atuais e relevantes",
       icon: "lightbulb" as const,
@@ -131,7 +135,7 @@ export const HomeScreen = observer(() => {
               <TouchableOpacity
                 key={index}
                 className={`w-[48%] mb-4 ${item.color} p-4 rounded-xl shadow-sm`}
-                onPress={() => handleMenuItemPress(item.title)}
+                onPress={() => handleMenuItemPress(item.id)}
               >
                 <MaterialIcons name={item.icon} size={32} color="white" />
                 <Text className="text-white font-bold mt-2">{item.title}</Text>
@@ -152,7 +156,7 @@ export const HomeScreen = observer(() => {
                 key={index}
                 className={`${
                   isDark ? "bg-surface-dark" : "bg-white"
-                } p-4 rounded-lg shadow-sm flex-row justify-between items-center`}
+                } p-4 rounded-lg shadow-sm flex-row justify-between items-center mb-1`}
               >
                 <View className="flex-1">
                   <Text
