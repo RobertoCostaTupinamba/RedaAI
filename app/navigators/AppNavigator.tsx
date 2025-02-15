@@ -70,6 +70,7 @@ const HomeDrawer = observer(() => {
       drawerContent={(props) => <DrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={Screens.HomeScreen} />
+      <Drawer.Screen name="Settings" component={Screens.SettingsScreen} />
     </Drawer.Navigator>
   )
 })

@@ -23,7 +23,7 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
       title: "Configurações",
       icon: "settings",
       onPress: () => {
-        // TODO: Implementar navegação para configurações
+        navigation.navigate("Settings")
         navigation.closeDrawer()
       },
     },
