@@ -18,6 +18,12 @@ export const HomeScreen = observer(() => {
       case "suggested-themes":
         navigation.navigate("SuggestedThemes")
         break
+      case "detailed-feedback":
+        navigation.navigate("DetailedFeedback")
+        break
+      case "my-essays":
+        navigation.navigate("MyEssays")
+        break
       // Adicione outros casos conforme necessário
     }
   }

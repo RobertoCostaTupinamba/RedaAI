@@ -53,7 +53,7 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
   return (
     <View className={`flex-1 ${isDark ? "bg-surface-dark" : "bg-surface"}`}>
       {/* Header do Menu */}
-      <View className={`p-4 ${isDark ? "bg-primary-dark" : "bg-primary"}`}>
+      <View className={`p-4 ${isDark ? "bg-primary-dark" : "bg-primary"} pt-10`}>
         <Text className={`text-2xl font-bold ${isDark ? "text-text-dark" : "text-white"} mb-2`}>
           RedaAI
         </Text>

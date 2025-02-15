@@ -36,6 +36,8 @@ export type AppStackParamList = {
   Login: undefined
   SignUp: undefined
   SuggestedThemes: undefined
+  DetailedFeedback: undefined
+  MyEssays: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
@@ -96,6 +98,8 @@ const AppStack = observer(function AppStack() {
         <>
           <Stack.Screen name="HomeDrawer" component={HomeDrawer} />
           <Stack.Screen name="SuggestedThemes" component={Screens.SuggestedThemesScreen} />
+          <Stack.Screen name="DetailedFeedback" component={Screens.DetailedFeedbackScreen} />
+          <Stack.Screen name="MyEssays" component={Screens.MyEssaysScreen} />
           <Stack.Screen name="Demo" component={DemoNavigator} />
         </>
       ) : (
