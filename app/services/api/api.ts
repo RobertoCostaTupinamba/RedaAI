@@ -36,44 +36,22 @@ export class Api {
       baseURL: this.config.url,
       timeout: this.config.timeout,
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "x-api-key": "5G7M64vftt5Ti3kRgkN664NDYL9bxrcT2IojLjgX",
       },
     })
   }
 
-  /**
-   * Gets a list of recent React Native Radio episodes.
-   */
-  async getEpisodes(): Promise<{ kind: "ok"; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem> {
-    // make the api call
-    const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
-      `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
-    )
-
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
-    }
-
-    // transform the data into the format we are expecting
-    try {
-      const rawData = response.data
-
-      // This is where we transform the data into the shape we expect for our MST model.
-      const episodes: EpisodeSnapshotIn[] =
-        rawData?.items.map((raw) => ({
-          ...raw,
-        })) ?? []
-
-      return { kind: "ok", episodes }
-    } catch (e) {
-      if (__DEV__ && e instanceof Error) {
-        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
-      }
-      return { kind: "bad-data" }
-    }
-  }
+  // setupRequestInterceptor(apisauceInstance: ApisauceInstance) {
+  //   apisauceInstance.axiosInstance.interceptors.request.use(
+  //     (config) => {
+  //       config.headers["x-api-key"] = "5G7M64vftt5Ti3kRgkN664NDYL9bxrcT2IojLjgX"
+  //       return config
+  //     },
+  //     (error) => Promise.reject(error),
+  //   )
+  // }
 }
 
 // Singleton instance of the API for convenience

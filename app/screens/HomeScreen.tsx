@@ -24,6 +24,9 @@ export const HomeScreen = observer(() => {
       case "my-essays":
         navigation.navigate("MyEssays")
         break
+      case "new-essay":
+        navigation.navigate("NewEssay")
+        break
       // Adicione outros casos conforme necessário
     }
   }

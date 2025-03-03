@@ -39,7 +39,7 @@ export const LoginScreen = observer(() => {
   const handleLogin = async () => {
     const success = await login()
     if (success) {
-      navigation.navigate("Home")
+      navigation.navigate("HomeDrawer")
     }
   }
 

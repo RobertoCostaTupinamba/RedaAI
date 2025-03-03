@@ -1,4 +1,7 @@
+import { authApi } from "@/services/api/auth-api"
+import { save } from "@/utils/storage"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { getRootStore } from "./helpers/getRootStore"
 
 export const AuthenticationStoreModel = types
   .model("AuthenticationStore")
@@ -6,6 +9,8 @@ export const AuthenticationStoreModel = types
     authToken: types.maybe(types.string),
     authEmail: "",
     password: types.optional(types.string, ""),
+    confirmPassword: types.optional(types.string, ""),
+    name: types.optional(types.string, ""),
     isLoading: types.optional(types.boolean, false),
     error: types.maybe(types.string),
   })
@@ -17,6 +22,9 @@ export const AuthenticationStoreModel = types
       if (store.authEmail.length === 0) return "Email não pode ficar em branco"
       if (store.authEmail.length < 6) return "Email deve ter pelo menos 6 caracteres"
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.authEmail)) return "Email deve ser válido"
+      if (store.name.length === 0) return "Nome não pode ficar em branco"
+      if (store.password.length < 6) return "Senha deve ter pelo menos 6 caracteres"
+      if (store.password !== store.confirmPassword) return "As senhas não coincidem"
       return ""
     },
   }))
@@ -30,12 +38,20 @@ export const AuthenticationStoreModel = types
       store.authToken = value
     },
 
+    setName(value: string) {
+      store.name = value
+    },
+
     setAuthEmail(value: string) {
       store.authEmail = value.replace(/ /g, "")
     },
 
     setPassword(value: string) {
       store.password = value
+    },
+
+    setConfirmPassword(value: string) {
+      store.confirmPassword = value
     },
 
     setIsLoading(value: boolean) {
@@ -51,34 +67,65 @@ export const AuthenticationStoreModel = types
       store.authEmail = ""
       store.password = ""
       this.resetStates()
+      getRootStore(store).userStore.reset()
     },
 
     async login() {
       try {
         console.log("Iniciando login...")
-        console.log("Email:", store.authEmail)
-        console.log("Senha:", store.password)
 
         this.setIsLoading(true)
         this.setError("")
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        const response = await authApi.login({
+          email: store.authEmail,
+          password: store.password,
+        })
 
-        if (store.authEmail === "admin@admin.com" && store.password === "123456") {
-          console.log("Credenciais corretas, setando token...")
-          this.setAuthToken("fake-token")
-          console.log("Token setado com sucesso")
+        if (response.kind === "ok") {
+          save("authToken", response.data.token)
+          this.setAuthToken(response.data.token)
+          getRootStore(store).userStore.setUser(response.data.user)
+          this.setIsLoading(false)
           return true
-        } else {
-          console.log("Credenciais inválidas")
-          throw new Error("Email ou senha inválidos")
         }
+
+        this.setIsLoading(false)
+        return false
       } catch (error) {
         console.log("Erro durante login:", error)
         if (error instanceof Error) {
           this.setError(error.message)
         } else {
           this.setError("Erro desconhecido ao fazer login")
+        }
+        return false
+      } finally {
+        this.setIsLoading(false)
+      }
+    },
+    async signUp() {
+      try {
+        this.setIsLoading(true)
+        this.setError("")
+
+        const response = await authApi.signUp({
+          name: store.name,
+          email: store.authEmail,
+          password: store.password,
+        })
+
+        if (response.kind === "ok") {
+          return true
+        }
+
+        return false
+      } catch (error) {
+        console.log("Erro durante cadastro:", error)
+        if (error instanceof Error) {
+          this.setError(error.message)
+        } else {
+          this.setError("Erro desconhecido ao fazer cadastro")
         }
         return false
       } finally {

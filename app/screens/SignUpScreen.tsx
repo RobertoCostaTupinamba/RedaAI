@@ -19,18 +19,32 @@ export const SignUpScreen = observer(() => {
     authenticationStore: {
       authEmail,
       password,
+      name,
+      confirmPassword,
       isLoading,
       error,
       setAuthEmail,
+      setName,
       setPassword,
+      setConfirmPassword,
       setError,
+      validationError,
+      signUp,
     },
   } = useStores()
 
   const handleSignUp = async () => {
     try {
-      // TODO: Implementar lógica real de cadastro
-      setError("Funcionalidade em desenvolvimento")
+      // validar erros
+      if (validationError) {
+        setError(validationError)
+        return
+      }
+
+      const success = await signUp()
+      if (success) {
+        navigation.navigate("Login")
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
@@ -66,6 +80,8 @@ export const SignUpScreen = observer(() => {
                 placeholder="Seu nome completo"
                 autoCapitalize="words"
                 editable={!isLoading}
+                value={name}
+                onChangeText={setName}
               />
             </View>
 
@@ -99,6 +115,8 @@ export const SignUpScreen = observer(() => {
               <TextInput
                 className="w-full bg-gray-100 rounded-lg px-4 py-3 text-gray-700"
                 placeholder="Digite a senha novamente"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
                 secureTextEntry
                 editable={!isLoading}
               />

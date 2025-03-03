@@ -9,4 +9,5 @@ export * from "./DemoDebugScreen"
 export * from "./DemoShowroomScreen/DemoShowroomScreen"
 export * from "./ErrorScreen/ErrorBoundary"
 export * from "./SettingsScreen"
+export * from "./NewEssayScreen"
 // export other screens here
