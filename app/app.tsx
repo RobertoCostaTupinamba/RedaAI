@@ -33,6 +33,8 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { loadDateFnsLocale } from "./utils/formatDate"
+import { StatusBar } from "react-native"
+import { useThemeStore } from "./utils/useAppTheme"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -68,6 +70,8 @@ export function App() {
     onNavigationStateChange,
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
+
+  const { isDark } = useThemeStore()
 
   const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
   const [isI18nInitialized, setIsI18nInitialized] = useState(false)
@@ -109,6 +113,10 @@ export function App() {
   // otherwise, we're ready to render the app
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <StatusBar
+        barStyle={isDark ? "light-content" : "dark-content"}
+        backgroundColor={isDark ? "#000000" : "#ffffff"}
+      />
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <KeyboardProvider statusBarTranslucent={false}>
           <AppNavigator
