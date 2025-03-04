@@ -33,8 +33,9 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { loadDateFnsLocale } from "./utils/formatDate"
-import { StatusBar } from "react-native"
+import { AppState, AppStateStatus, StatusBar } from "react-native"
 import { useThemeStore } from "./utils/useAppTheme"
+import checkForUpdates from "./utils/checkForUpdates"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -75,6 +76,7 @@ export function App() {
 
   const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
   const [isI18nInitialized, setIsI18nInitialized] = useState(false)
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
 
   useEffect(() => {
     initI18n()
@@ -89,6 +91,19 @@ export function App() {
     // Slightly delaying splash screen hiding for better UX; can be customized or removed as needed,
     setTimeout(SplashScreen.hideAsync, 500)
   })
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", async (nextAppState) => {
+      if (appState.match(/inactive|background|active/) && nextAppState === "active") {
+        await checkForUpdates()
+      }
+      setAppState(nextAppState)
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [appState])
 
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background

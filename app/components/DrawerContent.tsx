@@ -1,14 +1,36 @@
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { DrawerContentComponentProps } from "@react-navigation/drawer"
 import { useThemeStore } from "@/utils/useAppTheme"
+import Constants from "expo-constants"
+import checkForUpdates from "@/utils/checkForUpdates"
+import { useState } from "react"
+import { updateId } from "expo-updates"
 
 export function DrawerContent({ navigation }: DrawerContentComponentProps) {
   const {
     authenticationStore: { logout, authEmail },
   } = useStores()
   const { isDark, toggleTheme } = useThemeStore()
+  const [loading, setLoading] = useState(false)
+  const [versionId, setVersionId] = useState<string | null>(updateId)
+
+  const appVersion = Constants.expoConfig?.version
+
+  const getShortVersionId = (id: string) => {
+    return id ? id.slice(-6) : "N/A"
+  }
+
+  const checkUpdate = async () => {
+    try {
+      setLoading(true)
+      await checkForUpdates(true)
+      setVersionId(updateId)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const menuItems = [
     {
@@ -86,11 +108,17 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
 
       {/* Versão do App */}
       <View className={`p-4 border-t ${isDark ? "border-border-dark" : "border-border"}`}>
-        <Text
-          className={`${isDark ? "text-text-secondary-dark" : "text-text-secondary"} text-sm text-center`}
-        >
-          Versão 1.0.0
-        </Text>
+        <TouchableOpacity onPress={checkUpdate}>
+          {loading ? (
+            <ActivityIndicator size="small" color={isDark ? "#6B7280" : "#9CA3AF"} />
+          ) : (
+            <Text
+              className={`${isDark ? "text-text-secondary-dark" : "text-text-secondary"} text-sm text-center`}
+            >
+              Versão {appVersion} ({getShortVersionId(versionId ?? "")})
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   )
