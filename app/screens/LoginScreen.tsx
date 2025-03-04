@@ -29,9 +29,6 @@ export const LoginScreen = observer(() => {
     },
   } = useStores()
 
-  // Log temporário para debug
-  console.log("[LoginScreen] Estado do isLoading:", isLoading)
-
   useEffect(() => {
     resetStates()
   }, [])
@@ -95,7 +92,7 @@ export const LoginScreen = observer(() => {
               disabled={isLoading}
             >
               {isLoading ? <ActivityIndicator color="white" className="mr-2" /> : null}
-              <Text className="text-white text-center font-bold text-lg">
+              <Text testID="login-button" className="text-white text-center font-bold text-lg">
                 {isLoading ? "Entrando..." : "Entrar"}
               </Text>
             </TouchableOpacity>

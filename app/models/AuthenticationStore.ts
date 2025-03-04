@@ -27,6 +27,11 @@ export const AuthenticationStoreModel = types
       if (store.password !== store.confirmPassword) return "As senhas não coincidem"
       return ""
     },
+    get validationLogin() {
+      if (store.authEmail.length === 0) return "Email não pode ficar em branco"
+      if (store.password.length === 0) return "Senha não pode ficar em branco"
+      return ""
+    },
   }))
   .actions((store) => ({
     resetStates() {
@@ -72,7 +77,12 @@ export const AuthenticationStoreModel = types
 
     async login() {
       try {
-        console.log("Iniciando login...")
+        // console.log("Iniciando login...")
+
+        if (store.validationLogin) {
+          this.setError(store.validationLogin)
+          return false
+        }
 
         this.setIsLoading(true)
         this.setError("")

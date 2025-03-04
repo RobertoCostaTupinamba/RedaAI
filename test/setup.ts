@@ -1,6 +1,7 @@
 // we always make sure 'react-native' gets included first
 import * as ReactNative from "react-native"
 import mockFile from "./mockFile"
+import React from "react"
 
 // libraries to mock
 jest.doMock("react-native", () => {
@@ -17,6 +18,20 @@ jest.doMock("react-native", () => {
             failure?: (_error: any) => void, // eslint-disable-line @typescript-eslint/no-unused-vars
           ) => success(100, 100),
         ),
+      },
+      TouchableOpacity: ({ onPress, children, ...props }: any) => {
+        return React.createElement(
+          ReactNative.View,
+          {
+            ...props,
+            onClick: () => {
+              if (onPress) {
+                onPress()
+              }
+            },
+          },
+          children,
+        )
       },
     },
     ReactNative,
