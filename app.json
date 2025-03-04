@@ -8,25 +8,24 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "icon": "./assets/images/app-icon-all.png",
+    "icon": "./assets/images/icon.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "newArchEnabled": false,
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
-      "icon": "./assets/images/app-icon-android-legacy.png",
+      // "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.redaai",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
-        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+        // "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+        "backgroundColor": "#ffffff"
       }
     },
     "ios": {
-      "icon": "./assets/images/app-icon-ios.png",
+      // "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.redaai"
     },
@@ -41,9 +40,9 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/app-icon-android-adaptive-foreground.png",
-          "imageWidth": 300,
+          "imageWidth": 250,
           "resizeMode": "contain",
-          "backgroundColor": "#191015"
+          "backgroundColor": "#ffffff"
         }
       ]
     ],
