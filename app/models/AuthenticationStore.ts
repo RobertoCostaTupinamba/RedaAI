@@ -109,6 +109,16 @@ export const AuthenticationStoreModel = types
           return true
         }
 
+        console.log("response", response)
+
+        if (response.kind === "unauthorized") {
+          this.setError("Email ou senha inválidos")
+        }
+
+        if (response.kind === "bad-data") {
+          this.setError("Erro ao fazer login")
+        }
+
         this.setIsLoading(false)
         return false
       } catch (error) {

@@ -11,11 +11,6 @@ export interface SignUpCredentials extends LoginCredentials {
 }
 
 export interface AuthResponse {
-  statusCode: number
-  body: AuthResponseBody
-}
-
-export interface AuthResponseBody {
   message: string
   token: string
   user: {
@@ -39,10 +34,8 @@ export class AuthApi {
    */
   async login(
     credentials: LoginCredentials,
-  ): Promise<{ kind: "ok"; data: AuthResponseBody } | GeneralApiProblem> {
+  ): Promise<{ kind: "ok"; data: AuthResponse } | GeneralApiProblem> {
     try {
-      //logar os headers
-      console.log("headers", this.api.apisauce.headers)
       const response = await this.api.apisauce.post<AuthResponse>("/dev/login", credentials)
 
       if (!response.ok) {
@@ -50,11 +43,11 @@ export class AuthApi {
         if (problem) return problem
       }
 
-      if (!response.data?.body) {
+      if (!response.data) {
         return { kind: "bad-data" }
       }
 
-      return { kind: "ok", data: response.data.body }
+      return { kind: "ok", data: response.data }
     } catch (error) {
       return { kind: "bad-data" }
     }
