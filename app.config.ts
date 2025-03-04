@@ -17,6 +17,19 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
+    owner: "robertotupi",
+    slug: "redaai",
+    updates: {
+      url: "https://u.expo.dev/d0a7ff2b-7dff-4a67-abe8-145c24dc0098",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
+    },
+    extra: {
+      eas: {
+        projectId: "d0a7ff2b-7dff-4a67-abe8-145c24dc0098",
+      },
+    },
     plugins: [...existingPlugins, require("./plugins/withSplashScreen").withSplashScreen],
   }
 }

@@ -1,5 +1,13 @@
 import React from "react"
-import { View, ScrollView, TouchableOpacity, StatusBar, SafeAreaView, Text } from "react-native"
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+  SafeAreaView,
+  Text,
+  ActivityIndicator,
+} from "react-native"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { Switch } from "react-native"
 import { useThemeStore } from "@/utils/useAppTheme"
@@ -8,6 +16,10 @@ import { useMMKVString } from "react-native-mmkv"
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import { useStores } from "@/models"
+import checkForUpdates from "@/utils/checkForUpdates"
+import { useState } from "react"
+import Constants from "expo-constants"
+import { updateId } from "expo-updates"
 
 export const SettingsScreen = observer(() => {
   const navigation = useNavigation()
@@ -17,6 +29,20 @@ export const SettingsScreen = observer(() => {
   const {
     authenticationStore: { authEmail },
   } = useStores()
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false)
+
+  const getShortVersionId = (id: string) => {
+    return id ? id.slice(-6) : "N/A"
+  }
+
+  const handleCheckUpdate = async () => {
+    setIsCheckingUpdate(true)
+    try {
+      await checkForUpdates(true)
+    } finally {
+      setIsCheckingUpdate(false)
+    }
+  }
 
   const SettingItem = ({
     icon,
@@ -156,7 +182,23 @@ export const SettingsScreen = observer(() => {
             Sobre
           </Text>
 
-          <SettingItem icon="info" title="Versão do App" description="1.0.0" />
+          <SettingItem
+            icon="system-update"
+            title="Verificar Atualizações"
+            description={isCheckingUpdate ? "Verificando..." : "Buscar nova versão do app"}
+            onPress={handleCheckUpdate}
+            rightElement={
+              isCheckingUpdate && (
+                <ActivityIndicator size="small" color={isDark ? "#9CA3AF" : "#4B5563"} />
+              )
+            }
+          />
+
+          <SettingItem
+            icon="info"
+            title="Versão do App"
+            description={`${Constants.expoConfig?.version} (${getShortVersionId(updateId ?? "")})`}
+          />
 
           <SettingItem
             icon="help"
