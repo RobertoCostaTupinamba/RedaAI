@@ -39,6 +39,13 @@ export const AuthenticationStoreModel = types
       store.error = undefined
     },
 
+    resetForm() {
+      store.name = ""
+      store.authEmail = ""
+      store.password = ""
+      store.confirmPassword = ""
+    },
+
     setAuthToken(value?: string) {
       store.authToken = value
     },
@@ -71,6 +78,8 @@ export const AuthenticationStoreModel = types
       store.authToken = undefined
       store.authEmail = ""
       store.password = ""
+      store.confirmPassword = ""
+      store.name = ""
       this.resetStates()
       getRootStore(store).userStore.reset()
     },

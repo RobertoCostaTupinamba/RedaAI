@@ -12,7 +12,9 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { useNavigation } from "@react-navigation/native"
 import { AppStackScreenProps } from "../navigators"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { MaterialIcons } from "@expo/vector-icons"
+import { useThemeStore } from "@/utils/useAppTheme"
 
 export const LoginScreen = observer(() => {
   const navigation = useNavigation<AppStackScreenProps<"Login">["navigation"]>()
@@ -28,6 +30,8 @@ export const LoginScreen = observer(() => {
       resetStates,
     },
   } = useStores()
+  const { isDark } = useThemeStore()
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     resetStates()
@@ -42,6 +46,10 @@ export const LoginScreen = observer(() => {
 
   const goToSignUp = () => {
     navigation.navigate("SignUp")
+  }
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
   }
 
   return (
@@ -74,14 +82,23 @@ export const LoginScreen = observer(() => {
 
             <View>
               <Text className="text-gray-700 mb-2 text-base">Senha</Text>
-              <TextInput
-                className="w-full bg-gray-100 rounded-lg px-4 py-3 text-gray-700"
-                placeholder="Sua senha"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                editable={!isLoading}
-              />
+              <View className="relative">
+                <TextInput
+                  className="w-full bg-gray-100 rounded-lg px-4 py-3 text-gray-700 pr-12"
+                  placeholder="Sua senha"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  editable={!isLoading}
+                />
+                <TouchableOpacity className="absolute right-4 top-3" onPress={toggleShowPassword}>
+                  <MaterialIcons
+                    name={showPassword ? "visibility" : "visibility-off"}
+                    size={24}
+                    color={isDark ? "#9CA3AF" : "#4B5563"}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {error ? <Text className="text-red-500 text-center">{error}</Text> : null}

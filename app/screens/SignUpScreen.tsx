@@ -12,6 +12,7 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { useNavigation } from "@react-navigation/native"
 import { AppStackScreenProps } from "../navigators"
+import { useEffect } from "react"
 
 export const SignUpScreen = observer(() => {
   const navigation = useNavigation<AppStackScreenProps<"SignUp">["navigation"]>()
@@ -30,8 +31,13 @@ export const SignUpScreen = observer(() => {
       setError,
       validationError,
       signUp,
+      resetForm,
     },
   } = useStores()
+
+  useEffect(() => {
+    resetForm()
+  }, [])
 
   const handleSignUp = async () => {
     try {
@@ -61,7 +67,8 @@ export const SignUpScreen = observer(() => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+        keyboardVerticalOffset={20} // ajuste conforme necessário
         className="flex-1"
       >
         <View className="flex-1 justify-center px-8">
