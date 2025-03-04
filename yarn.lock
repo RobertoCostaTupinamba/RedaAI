@@ -4548,7 +4548,7 @@ expo-updates-interface@~1.0.0:
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-1.0.0.tgz#b98c66b800d29561c62409556948b2af3d5316e5"
   integrity sha512-93oWtvULJOj+Pp+N/lpTcFfuREX1wNeHtp7Lwn8EbzYYmdn37MvZU3TPW2tYYCZuhzmKEXnUblYcruYoDu7IrQ==
 
-expo-updates@~0.27.1:
+expo-updates@^0.27.2:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/expo-updates/-/expo-updates-0.27.2.tgz#e17b715210689ded735166ebac421a51f124acbb"
   integrity sha512-CMtb8uXJT4kgzoSQ7xvFAqllS+ER2Gzst8Z1vgL3/v4TRfK07My4FqJm8t72wTAYT5yO02AaKubY2ZlasObkLg==
