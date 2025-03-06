@@ -1,6 +1,6 @@
 import { authApi } from "@/services/api/auth-api"
-import { save } from "@/utils/storage"
-import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { clear, save } from "@/utils/storage"
+import { flow, Instance, SnapshotOut, types } from "mobx-state-tree"
 import { getRootStore } from "./helpers/getRootStore"
 
 export const AuthenticationStoreModel = types
@@ -73,16 +73,22 @@ export const AuthenticationStoreModel = types
     setError(value?: string) {
       store.error = value
     },
+    logout: flow(function* () {
+      try {
+        clear()
 
-    logout() {
-      store.authToken = undefined
-      store.authEmail = ""
-      store.password = ""
-      store.confirmPassword = ""
-      store.name = ""
-      this.resetStates()
-      getRootStore(store).userStore.reset()
-    },
+        store.authToken = undefined
+        store.authEmail = ""
+        store.password = ""
+        store.confirmPassword = ""
+        store.name = ""
+        store.error = undefined
+        store.isLoading = false
+        getRootStore(store).userStore.reset()
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error)
+      }
+    }),
 
     async login() {
       try {

@@ -94,3 +94,6 @@ web-build/
 
 # Cursor
 .cursorrules
+
+# APK
+*.apk
