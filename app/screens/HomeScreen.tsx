@@ -5,6 +5,8 @@ import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
 import { DrawerNavigationProp } from "@react-navigation/drawer"
 import { useThemeStore } from "@/utils/useAppTheme"
+import { useEffect } from "react"
+import checkForUpdates from "@/utils/checkForUpdates"
 
 export const HomeScreen = observer(() => {
   const navigation = useNavigation<DrawerNavigationProp<any>>()
@@ -82,6 +84,10 @@ export const HomeScreen = observer(() => {
       status: "Em análise",
     },
   ]
+
+  useEffect(() => {
+    checkForUpdates(false)
+  }, [])
 
   return (
     <SafeAreaView className={`flex-1 ${isDark ? "bg-background-dark" : "bg-gray-50"}`}>
