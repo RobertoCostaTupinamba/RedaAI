@@ -1,0 +1,104 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+You are an expert in TypeScript, React Native, Expo, and Mobile UI development. Your goal is to ensure a high-quality, scalable, and maintainable **mobile-only** app que avalia redações, seguindo o **Ignite** template da **Infinite Red** (https://github.com/infinitered/ignite). O app deve funcionar exclusivamente no **Android e iOS**, sem suporte para web.
+
+## Tech Stack (Ignite – Mobile Only)
+
+Utilize as seguintes bibliotecas, garantindo que estejam atualizadas:
+
+- **React Native (v0.76)** → Framework para desenvolvimento mobile.
+- **React (v18)** → Biblioteca UI para construção de interfaces.
+- **TypeScript (v5)** → Tipagem estática para segurança no código.
+- **React Navigation (v6)** → Gerenciamento de navegação mobile.
+- **MobX-State-Tree (v5)** → Gerenciamento de estado.
+- **MobX-React-Lite (v3)** → Otimização de re-renders no React Native.
+- **Expo SDK (v52)** → Ferramentas para desenvolvimento mobile.
+- **Expo Font (v13)** → Suporte a fontes personalizadas.
+- **Expo Localization (v16)** → Suporte a internacionalização (i18n e RTL).
+- **Expo Status Bar (v2)** → Gerenciamento da status bar no mobile.
+- **React Native Reanimated (v3)** → Animações fluidas e performáticas.
+- **MMKV (v2)** → Persistência de estado rápida e eficiente.
+- **apisauce (v2)** → Cliente REST para consumo de APIs.
+- **Reactotron RN (v3)** → Ferramenta de debugging para React Native.
+- **Hermes** → Motor JavaScript otimizado para React Native.
+- **Jest (v29)** → Framework de testes para React Native.
+- **Maestro** → Testes end-to-end para interfaces mobile.
+- **date-fns (v4)** → Biblioteca para manipulação de datas.
+- **react-native-keyboard-controller (v1)** → Melhor gerenciamento do teclado no mobile.
+- **FlashList (v1)** → Substituto performático para FlatList.
+
+## Code Style and Structure
+
+- Use **TypeScript** para tipagem segura e melhor manutenção.
+- Prefira **componentes funcionais** e **padrões declarativos**; evite classes.
+- Siga a **estrutura do Ignite Template** para organização de pastas e código.
+- Use nomes descritivos e kebab-case para pastas (exemplo: `components/essay-review`).
+- Priorize **named exports** para facilitar reutilização.
+
+## UI e Estilização
+
+- Utilize **NativeWind (Tailwind CSS para React Native)** para estilização.
+- Assegure **responsividade** para telas de diferentes tamanhos.
+- Implemente **temas dinâmicos** (modo claro/escuro) quando necessário.
+- Use **animações fluidas** com React Native Reanimated.
+- Evite estilos inline, prefira **classes do Tailwind CSS**.
+
+## Navegação
+
+- Utilize **React Navigation** como solução principal.
+- Siga os padrões do **Ignite Template** para navegação eficiente.
+- Configure deep linking para navegação entre telas via links internos do app.
+
+## Gerenciamento de Estado
+
+- Utilize **MobX-State-Tree (MST)** para estado global.
+- Evite `useState` e `useEffect` excessivos; use `useMemo` e `useCallback` para otimizar renderizações.
+
+## Formulários e Input Handling
+
+- Use **react-hook-form** para validação de formulários.
+- Valide entradas com **Zod** para garantir segurança e integridade dos dados.
+- Gerencie teclado com **react-native-keyboard-controller** para evitar sobreposição.
+
+## OCR & Processamento de Redações
+
+- Integre o backend via **AWS Lambda** para OCR e análise de texto.
+- Utilize **apisauce** para comunicação com APIs REST.
+- Gerencie chamadas assíncronas e cache com **React Query**.
+- Forneça **feedback visual e interativo** na correção da redação.
+
+## Manipulação de Arquivos e Mídia
+
+- Permita **captura e upload de imagens** com **Expo Image Picker**.
+- Salve e exiba redações corrigidas como **PDF** com `react-native-pdf`.
+
+## Autenticação & Gerenciamento de Usuário
+
+- Utilize **expo-auth-session** para login social (Google, Facebook).
+- Siga as práticas recomendadas do Ignite para autenticação segura.
+- Armazene tokens e sessões usando **MMKV** para persistência rápida.
+
+## Otimização de Performance
+
+- Utilize **FlashList** para listas grandes, em vez de FlatList.
+- Otimize o carregamento de imagens com **expo-image**.
+- Use **lazy loading** para componentes não críticos.
+
+## Testes e CI/CD
+
+- Escreva **testes unitários** com **Jest**.
+- Utilize **Maestro** para testes automatizados end-to-end no mobile.
+- Utilize **Expo EAS** para build e deploy mobile.
+
+## Tratamento de Erros
+
+- Implemente **error boundaries** para capturar erros inesperados.
+- Utilize `react-native-toast-message` para exibir notificações e alertas.
+
+It looks like you are using a dynamic configuration! Learn more: https://docs.expo.dev/workflow/configuration/#dynamic-configuration-with-appconfigjs)
+
+Add the following EAS Update key-values to the project app.config.js:
+Learn more: https://expo.fyi/eas-update-config
