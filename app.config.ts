@@ -30,6 +30,10 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
         projectId: "d0a7ff2b-7dff-4a67-abe8-145c24dc0098",
       },
     },
-    plugins: [...existingPlugins, require("./plugins/withSplashScreen").withSplashScreen],
+    plugins: [
+      ...existingPlugins,
+      require("./plugins/withSplashScreen").withSplashScreen,
+      require("./plugins/withDisableBackup").withDisableBackup,
+    ],
   }
 }
