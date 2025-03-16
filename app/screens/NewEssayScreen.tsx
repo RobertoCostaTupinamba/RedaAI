@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  Platform,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { MaterialIcons } from "@expo/vector-icons"
@@ -14,70 +15,145 @@ import { useNavigation } from "@react-navigation/native"
 import { AppStackScreenProps } from "../navigators"
 import { useAppTheme } from "@/utils/useAppTheme"
 import * as ImagePicker from "expo-image-picker"
+import { useStores } from "@/models/helpers/useStores"
+import Toast from "react-native-toast-message"
 
 export const NewEssayScreen = observer(() => {
   const navigation = useNavigation<AppStackScreenProps<"NewEssay">["navigation"]>()
   const { isDark } = useAppTheme()
-  const [essayText, setEssayText] = useState("")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [imageBase64, setImageBase64] = useState<string | null>(null)
+  const {
+    essayStore: {
+      submitEssay,
+      essayText,
+      setEssayText,
+      isLoading,
+      error,
+      setError,
+      setLoading,
+      isTextTooShort,
+      isTextTooLong,
+      reset,
+      transcribeImage,
+    },
+  } = useStores()
 
   const pickImage = async () => {
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
+      // Solicitar permissão de câmera
+      const { status } = await ImagePicker.requestCameraPermissionsAsync()
+
+      if (status !== "granted") {
+        setError("Precisamos de permissão para acessar sua câmera")
+        return
+      }
+
+      setLoading(true)
+      setError("")
+
+      // Abrir a câmera em vez da galeria propocáo de 720p
+      const result = await ImagePicker.launchCameraAsync({
         mediaTypes: "images",
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        quality: 0.5, // Reduzir a qualidade da imagem para 50%
+        base64: true, // Capturar o base64 da imagem
+        // aspect: [9, 16], // Proporção 9:16 para 720p
       })
 
       if (!result.canceled) {
         setSelectedImage(result.assets[0].uri)
-        await processImage(result.assets[0].uri)
+        // Guardar o base64 da imagem para enviar no payload posteriormente
+        setImageBase64(result.assets[0].base64 || null)
+
+        await processImage(result.assets[0].uri, result.assets[0].base64)
+      } else {
+        setLoading(false)
       }
     } catch (err) {
-      setError("Erro ao selecionar imagem")
+      setError("Erro ao capturar imagem")
+      setLoading(false)
     }
   }
 
-  const processImage = async (imageUri: string) => {
+  const processImage = async (imageUri: string, base64Data?: string | null) => {
     try {
-      setIsLoading(true)
-      setError(null)
+      setLoading(true)
+      setError("")
 
-      // TODO: Implementar chamada real para o backend
-      // const response = await api.post("/ocr", { image: imageUri })
-      // setEssayText(response.data.text)
+      if (!base64Data) {
+        setError("Erro ao processar a imagem: dados da imagem inválidos")
+        return
+      }
 
-      // Simulação de resposta do backend
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setEssayText("Texto transcrito da imagem...")
+      // Mostrar feedback ao usuário
+      Toast.show({
+        text1: "Processando imagem...",
+        type: "info",
+      })
+
+      // Chamar a API para transcrever a imagem
+      const response = await transcribeImage(base64Data)
+
+      if (response) {
+        // Extrair o texto transcrito com sucesso
+        setEssayText(response)
+        Toast.hide()
+
+        // Mostrar toast de sucesso
+        Toast.show({
+          text1: "Imagem processada com sucesso",
+          type: "success",
+          visibilityTime: 2000,
+        })
+      } else {
+        Toast.hide()
+        // Tratar erro
+        setError("Erro ao processar imagem")
+      }
     } catch (err) {
       setError("Erro ao processar imagem")
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
+  }
+
+  // Função para exibir toast de sucesso
+  const showSuccessToast = () => {
+    Toast.show({
+      text1: "Redação enviada com sucesso",
+      type: "success",
+      visibilityTime: 3000,
+      autoHide: true,
+      position: "top",
+      text2: "Sua redação está sendo avaliada",
+      topOffset: 100,
+    })
   }
 
   const handleSubmit = async () => {
     try {
-      setIsLoading(true)
-      setError(null)
+      setLoading(true)
+      setError("")
 
-      // calcular quantidade de caracteres
-      const characterCount = essayText.length
-
-      if (characterCount < 500) {
+      if (isTextTooShort) {
         setError(
           "A redação deve conter pelo menos 500 caracteres que representam em média 7 linhas",
         )
         return
       }
 
-      if (characterCount > 4000) {
+      if (isTextTooLong) {
         setError("A redação deve conter no máximo 4000 caracteres")
         return
+      }
+
+      const response = await submitEssay()
+      if (response) {
+        reset()
+
+        showSuccessToast()
+        navigation.navigate("HomeDrawer")
       }
 
       // TODO: Implementar chamada real para o backend
@@ -90,7 +166,7 @@ export const NewEssayScreen = observer(() => {
     } catch (err) {
       setError("Erro ao enviar redação")
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
@@ -170,12 +246,12 @@ export const NewEssayScreen = observer(() => {
             } p-4 rounded-lg shadow-sm flex-row items-center justify-center`}
           >
             <MaterialIcons
-              name="camera-alt"
+              name="camera"
               size={24}
               color={isDark ? "#9CA3AF" : "#4B5563"}
               style={{ marginRight: 8 }}
             />
-            <Text className={isDark ? "text-text-dark" : "text-gray-800"}>Enviar Foto</Text>
+            <Text className={isDark ? "text-text-dark" : "text-gray-800"}>Tirar Foto</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
