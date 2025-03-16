@@ -6,5 +6,5 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "https://ah8ulekxxc.execute-api.us-east-2.amazonaws.com",
+  API_URL: "https://ztcy5n54eb.execute-api.us-east-2.amazonaws.com",
 }

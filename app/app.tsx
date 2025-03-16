@@ -36,6 +36,7 @@ import { loadDateFnsLocale } from "./utils/formatDate"
 import { AppState, AppStateStatus, StatusBar } from "react-native"
 import { useThemeStore } from "./utils/useAppTheme"
 import checkForUpdates from "./utils/checkForUpdates"
+import Toast from "react-native-toast-message"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -141,6 +142,7 @@ export function App() {
           />
         </KeyboardProvider>
       </ErrorBoundary>
+      <Toast />
     </SafeAreaProvider>
   )
 }

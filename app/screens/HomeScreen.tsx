@@ -12,6 +12,7 @@ export const HomeScreen = observer(() => {
   const navigation = useNavigation<DrawerNavigationProp<any>>()
   const {
     authenticationStore: { authEmail },
+    essayStore: { essayToCorrection },
   } = useStores()
   const { isDark } = useThemeStore()
 

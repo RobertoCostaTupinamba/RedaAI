@@ -10,6 +10,7 @@ import Config from "../../config"
 import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
 import type { ApiConfig, ApiFeedResponse } from "./api.types"
 import type { EpisodeSnapshotIn } from "../../models/Episode"
+import { load } from "@/utils/storage"
 
 /**
  * Configuring the apisauce instance.
@@ -38,20 +39,31 @@ export class Api {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "x-api-key": "5G7M64vftt5Ti3kRgkN664NDYL9bxrcT2IojLjgX",
+        "x-api-key": "YOgyQeDO8s6oxjxw0afe73YLcPub0nQm42fMFzym",
       },
     })
+    this.setupRequestInterceptor(this.apisauce)
   }
 
-  // setupRequestInterceptor(apisauceInstance: ApisauceInstance) {
-  //   apisauceInstance.axiosInstance.interceptors.request.use(
-  //     (config) => {
-  //       config.headers["x-api-key"] = "5G7M64vftt5Ti3kRgkN664NDYL9bxrcT2IojLjgX"
-  //       return config
-  //     },
-  //     (error) => Promise.reject(error),
-  //   )
-  // }
+  setupRequestInterceptor(apisauceInstance: ApisauceInstance) {
+    apisauceInstance.axiosInstance.interceptors.request.use(
+      async (config) => {
+        console.log("teste")
+
+        const token = (await load("authToken")) || ""
+        config.headers["x-api-key"] = "YOgyQeDO8s6oxjxw0afe73YLcPub0nQm42fMFzym"
+
+        console.log("sdasd", token)
+
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`
+        }
+        config.headers["Content-Type"] = "application/json"
+        return config
+      },
+      (error) => Promise.reject(error),
+    )
+  }
 }
 
 // Singleton instance of the API for convenience
